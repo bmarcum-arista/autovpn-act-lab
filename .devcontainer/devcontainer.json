@@ -1,0 +1,5 @@
+{
+    "name": "AVD Universal",
+    "image": "ghcr.io/aristanetworks/avd/universal:python3.13-avd-v6.1.0",
+    "postCreateCommand": "python -m pip install --no-cache-dir ansible-pylibssh" // Adds SSH module for CLI connectivity to EOS devices 
+}

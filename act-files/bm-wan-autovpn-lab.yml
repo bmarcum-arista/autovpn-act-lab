@@ -1,0 +1,232 @@
+veos:
+  # Define the global vEOS node parameters
+  username: cvpadmin
+  password: cvp123!
+  version: 4.34.3M
+cloudeos:
+  username: cvpadmin
+  password: cvp123!
+  version: 4.34.3M
+tools-server:
+  username: arista
+  password: arista
+  version: ubuntu-2404-lts
+cvp:
+  # Define global cvp node parameters
+  username: root
+  password: cvproot
+  version: 2025.3.2
+  instance: singlenode
+
+nodes:   
+  - cvp:
+      ip_addr: 192.168.0.5
+      node_type: cvp
+      auto_configuration: true
+      ntp_ip: 0.pool.ntp.org   # optional
+      instance_type: large
+#####################
+### CORE
+#####################
+  - CORE:
+      ip_addr: 192.168.0.11
+      node_type: veos
+      internet_access: true
+###########################
+##### WEST
+###########################
+  - WEST-AGG:
+      ip_addr: 192.168.0.21
+      node_type: veos
+      internet_access: true
+  - WEST-DC:
+      ip_addr: 192.168.0.22
+      node_type: veos
+      internet_access: true
+  - WEST-R1:
+      ip_addr: 192.168.0.23
+      node_type: cloudeos
+      internet_access: true
+  - HOST-A1:
+      ip_addr: 192.168.0.24
+      node_type: tools-server
+  - HOST-A2:
+      ip_addr: 192.168.0.25
+      node_type: tools-server
+#####################
+### EAST
+#####################
+  - EAST-AGG:
+      ip_addr: 192.168.0.31
+      node_type: veos
+      internet_access: true
+  - EAST-DC:
+      ip_addr: 192.168.0.32
+      node_type: veos
+      internet_access: true
+  - EAST-R1:
+      ip_addr: 192.168.0.33
+      node_type: cloudeos
+      internet_access: true
+  - HOST-B1:
+      ip_addr: 192.168.0.34
+      node_type: tools-server
+  - HOST-B2:
+      ip_addr: 192.168.0.35
+      node_type: tools-server
+#####################
+### SITE 1
+#####################
+  - S1-R1:
+      ip_addr: 192.168.0.41
+      node_type: cloudeos
+      internet_access: true
+  - S1-SW1:
+      ip_addr: 192.168.0.42
+      node_type: veos
+      internet_access: true
+  - HOST-C1:
+      ip_addr: 192.168.0.43
+      node_type: tools-server
+#####################
+### SITE 2
+#####################
+  - S2-R1:
+      ip_addr: 192.168.0.51
+      node_type: cloudeos
+      internet_access: true
+  - S2-SW1:
+      ip_addr: 192.168.0.52
+      node_type: veos
+      internet_access: true
+  - HOST-D1:
+      ip_addr: 192.168.0.53
+      node_type: tools-server
+#####################
+### SITE 3
+#####################
+  - S3-R1:
+      ip_addr: 192.168.0.61
+      node_type: cloudeos
+      internet_access: true
+  - S3-SW1:
+      ip_addr: 192.168.0.62
+      node_type: veos
+      internet_access: true
+  - HOST-E1:
+      ip_addr: 192.168.0.63
+      node_type: tools-server
+#####################
+### SITE 4
+#####################
+  - S4-R1:
+      ip_addr: 192.168.0.71
+      node_type: cloudeos
+      internet_access: true
+  - S4-SW1:
+      ip_addr: 192.168.0.72
+      node_type: veos
+      internet_access: true
+  - HOST-F1:
+      ip_addr: 192.168.0.73
+      node_type: tools-server
+
+#####################
+### INTERNET
+#####################
+  - INTERNET:
+      ip_addr: 192.168.0.81
+      node_type: veos
+      internet_access: true
+
+links:
+#####################
+### WEST
+#####################
+  - connection:
+    - WEST-AGG:Ethernet1
+    - CORE:Ethernet1
+  - connection:
+    - WEST-AGG:Ethernet2
+    - WEST-DC:Ethernet1
+  - connection:
+    - WEST-DC:Ethernet2
+    - HOST-A1:Ethernet2
+  - connection:
+    - WEST-DC:Ethernet3
+    - HOST-A2:Ethernet2
+  - connection:
+    - WEST-R1:Ethernet1
+    - WEST-AGG:Ethernet3
+  - connection:
+    - WEST-R1:Ethernet2
+    - INTERNET:Ethernet1
+#####################
+### EAST
+#####################
+  - connection:
+    - EAST-AGG:Ethernet1
+    - CORE:Ethernet2
+  - connection:
+    - EAST-AGG:Ethernet2
+    - EAST-DC:Ethernet1
+  - connection:
+    - EAST-DC:Ethernet2
+    - HOST-B1:Ethernet2
+  - connection:
+    - EAST-DC:Ethernet3
+    - HOST-B2:Ethernet2
+  - connection:
+    - EAST-R1:Ethernet1
+    - EAST-AGG:Ethernet3
+  - connection:
+    - EAST-R1:Ethernet2
+    - INTERNET:Ethernet3
+#####################
+### SITE 1
+#####################
+  - connection:
+    - S1-R1:Ethernet1
+    - S1-SW1:Ethernet1
+  - connection:
+    - S1-R1:Ethernet2
+    - INTERNET:Ethernet5
+  - connection:
+    - S1-SW1:Ethernet2
+    - HOST-C1:Ethernet2
+#####################
+### SITE 2
+#####################
+  - connection:
+    - S2-R1:Ethernet1
+    - S2-SW1:Ethernet1
+  - connection:
+    - S2-R1:Ethernet2
+    - INTERNET:Ethernet6
+  - connection:
+    - S2-SW1:Ethernet2
+    - HOST-D1:Ethernet2
+#####################
+### SITE 3
+#####################
+  - connection:
+    - S3-R1:Ethernet1
+    - S3-SW1:Ethernet1
+  - connection:
+    - S3-R1:Ethernet2
+    - INTERNET:Ethernet7
+  - connection:
+    - S3-SW1:Ethernet2
+    - HOST-E1:Ethernet2
+#####################
+### SITE 4
+#####################
+  - connection:
+    - S4-R1:Ethernet1
+    - S4-SW1:Ethernet1
+  - connection:
+    - S4-R1:Ethernet2
+    - INTERNET:Ethernet8
+  - connection:
+    - S4-SW1:Ethernet2
+    - HOST-F1:Ethernet2

@@ -1,0 +1,116 @@
+---
+all:
+  children:
+    CVP:
+      hosts:
+        cv_ztp:
+          ansible_host: 10.18.164.49
+          ansible_user: root
+          ansible_password: cvproot
+        cv_server:
+          ansible_httpapi_host: 10.18.164.49
+          ansible_host: 10.18.164.49
+          ansible_user: cvpadmin
+          ansible_password: cvp123!
+    VEOS:
+      hosts:
+        CORE:
+          ansible_host: 10.18.164.46
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        EAST-AGG:
+          ansible_host: 10.18.164.45
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        EAST-DC:
+          ansible_host: 10.18.164.22
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        INTERNET:
+          ansible_host: 10.18.164.43
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S1-SW1:
+          ansible_host: 10.18.128.66
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S2-SW1:
+          ansible_host: 10.18.164.32
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S3-SW1:
+          ansible_host: 10.18.164.44
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S4-SW1:
+          ansible_host: 10.18.157.111
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-AGG:
+          ansible_host: 10.18.164.48
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-DC:
+          ansible_host: 10.18.164.47
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+    CLOUDEOS:
+      hosts:
+        EAST-R1:
+          ansible_host: 10.18.128.51
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S1-R1:
+          ansible_host: 10.18.128.67
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S2-R1:
+          ansible_host: 10.18.157.97
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S3-R1:
+          ansible_host: 10.18.157.96
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S4-R1:
+          ansible_host: 10.18.157.92
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-R1:
+          ansible_host: 10.18.128.61
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+    TOOLSSERVER:
+      hosts:
+        HOST-A1:
+          ansible_host: 10.18.128.60
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-A2:
+          ansible_host: 10.18.128.24
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-B1:
+          ansible_host: 10.18.164.34
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-B2:
+          ansible_host: 10.18.128.32
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-C1:
+          ansible_host: 10.18.128.34
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-D1:
+          ansible_host: 10.18.128.36
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-E1:
+          ansible_host: 10.18.128.53
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-F1:
+          ansible_host: 10.18.128.28
+          ansible_user: arista
+          ansible_ssh_pass: arista
