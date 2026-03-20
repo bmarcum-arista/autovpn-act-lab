@@ -6,8 +6,6 @@
     - name: Provision CVP with AVD configuration
       run_once: true
       delegate_to: localhost
-      # https://avd.arista.com/4.10/docs/plugins/Modules_and_action_plugins/cv_workflow.html
-      # https://avd.arista.com/4.10/roles/cv_deploy/index.html
       ansible.builtin.import_role:
         name: arista.avd.cv_deploy
       vars:
