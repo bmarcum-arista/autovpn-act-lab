@@ -1,5 +1,5 @@
 - name: Deploy WAN Configuration with CloudVision
-  hosts: actlab02
+  hosts: WAN
   connection: local
   gather_facts: false
   tasks:
@@ -12,6 +12,6 @@
         name: arista.avd.cv_deploy
       vars:
         cv_server: www.cv-staging.corp.arista.io
-        cv_token: "{{ lookup('file', './cvaas-service.tok') }}"
+        cv_token: "{{ lookup('file', '../../cvaas-service.tok') }}"
         cv_run_change_control: false
         deploy_to_cv_accept_preview: true

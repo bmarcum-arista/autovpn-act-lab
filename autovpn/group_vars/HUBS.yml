@@ -1,0 +1,32 @@
+---
+# WAN HUB Nodes
+
+type: wan_rr
+
+wan_rr: # dynamic_key: node_type
+  defaults:
+    data_plane_cpu_allocation_max: 1
+    loopback_ipv4_pool: 10.0.0.0/24
+    vtep_loopback_ipv4_pool: 10.1.0.0/24
+    filter:
+      always_include_vrfs_in_tenants: [AUTOVPN-TENANT]
+  nodes:
+    - name: WEST-R1
+      id: 1
+      loopback_ipv4_address: 10.0.1.103
+      mgmt_ip: 192.168.0.23/24
+      vtep_loopback_ipv4_address: 10.1.1.103
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.1.103.2/30
+          wan_carrier: internet
+    - name: EAST-R1
+      id: 2
+      loopback_ipv4_address: 10.0.2.103
+      mgmt_ip: 192.168.0.33/24
+      vtep_loopback_ipv4_address: 10.1.2.103
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.2.103.2/30
+          wan_carrier: internet
+wan_stun_dtls_disable: True # Disable dTLS for STUN, for the lab. (NOT recommended in production)

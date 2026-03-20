@@ -1,6 +1,6 @@
 ---
 - name: Build WAN Configuration
-  hosts: actlab02
+  hosts: WAN
   connection: local
   gather_facts: false
   tasks:

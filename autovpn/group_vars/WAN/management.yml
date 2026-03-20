@@ -1,0 +1,88 @@
+---
+
+aaa_settings.local_users:
+  - name: admin
+    privilege: 15
+    role: network-admin
+    sha512_password: "$6$dBV2TikvEhsviGQF$tXu/McA.AkuHvZk1/lCsegkR47ZCTJmAh/CgzdRvNn.Od9B3w69XdEW5cGWRUAmfr428P2HpfkEbNdkDucgaN/"
+
+  - name: avd
+    privilege: 15
+    role: network-admin
+    sha512_password: "$6$Th/KFTmIYnvxkb7Q$E3tHQxMVocrqis9cwTt.J3UpOx7DhgAuVtrIPXWIsHFhHP9QSZng13cNmcYwkTtUOVZuiyTqWt01W.t5fE9eR1"
+  
+  - name: cvpadmin
+    privilege: 15
+    role: network-admin
+    sha512_password: "$6$dqXuoxAoGbFcWtzL$i7mEyybzlhsyY6jGKmV4NVGrOegDziitQLo4DYQLVG5EWpyVgxX.PeZLABz2XS/GJZE6kp7lURyA4Yi7/Bsjy0"    
+
+mgmt_interface_vrf: default
+default_mgmt_method: oob
+# mgmt_gateway: 192.168.0.6
+
+custom_structured_configuration_switchport_default:
+  mode: "routed"
+
+custom_structured_configuration_agents:
+  - name: KernelFib
+    environment_variables:
+      - name: KERNELFIB_PROGRAM_ALL_ECMP
+        value: "'true'"
+
+# cvp_instance_ips: ["apiserver.cv-staging.corp.arista.io"]
+
+custom_structured_configuration_daemon_terminattr:
+  cvaddrs:
+      # Server address in the format `<ip/fqdn>:<port>`.
+    - apiserver.cv-staging.corp.arista.io:443
+  cvauth:
+    method: "token-secure"
+    # Token file path.
+    # e.g. "/tmp/token"
+    token_file: "/tmp/cv-onboarding-token"
+  # The VRF to use to connect to CloudVision.
+  cvvrf: default
+  disable_aaa: true
+  # Exclude paths from Sysdb on the ingest side.
+  # e.g. "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+  # Exclude paths from the shared memory table.
+  # e.g. "ale,flexCounter,hardware,kni,pulse,strata"
+  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+
+# custom_structured_configuration_daemon_terminattr:
+#   cvauth:
+#     token_file: "/tmp/cv-onboarding-token"
+#   disable_aaa: true
+
+authorization:
+  exec:
+    default: local
+
+# custom_structured_configuration_ip_domain_lookup:
+#   source_interfaces:
+#     - name: Management1
+
+custom_structured_configuration_management_ssh:
+  client_alive:
+    interval: 240
+
+ntp_settings:
+  server_vrf: default
+  servers:
+    - name: 0.us.pool.ntp.org
+
+dns_settings:
+  servers:
+    - ip_address: 8.8.4.4
+      vrf: default
+    - ip_address: 8.8.8.8
+      vrf: default
+
+skipped_tests:
+  - category: AvdTestHardware
+    tests:
+      - VerifyEnvironmentPower
+      - VerifyEnvironmentCooling
+      - VerifyTemperature
+      - VerifyTransceiversManufacturers

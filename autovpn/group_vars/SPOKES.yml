@@ -1,0 +1,55 @@
+---
+
+# Edge nodes configuration
+
+type: wan_router
+
+wan_router:  # dynamic_key: node_type
+  defaults:
+    cv_pathfinder_region: region1
+    loopback_ipv4_pool: 10.0.0.0/24
+    vtep_loopback_ipv4_pool: 10.1.0.0/24
+    filter:
+      always_include_vrfs_in_tenants: [AUTOVPN-TENANT]
+  nodes:
+    - name: S1-R1
+      id: 1
+      cv_pathfinder_site: site01
+      loopback_ipv4_address: 10.0.3.101
+      mgmt_ip: 192.168.0.41/24
+      vtep_loopback_ipv4_address: 10.1.3.101
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.3.101.2/30
+          wan_carrier: internet
+    - name: S2-R1
+      id: 2
+      cv_pathfinder_site: site02
+      loopback_ipv4_address: 10.0.4.101
+      mgmt_ip: 192.168.0.51/24
+      vtep_loopback_ipv4_address: 10.1.4.101
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.4.101.2/30
+          wan_carrier: internet
+    - name: S3-R1
+      id: 3
+      cv_pathfinder_site: site03
+      loopback_ipv4_address: 10.0.5.101
+      mgmt_ip: 192.168.0.61/24
+      vtep_loopback_ipv4_address: 10.1.5.101
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.5.101.2/30
+          wan_carrier: internet
+    - name: S4-R1
+      id: 4
+      cv_pathfinder_site: site04
+      loopback_ipv4_address: 10.0.6.101
+      mgmt_ip: 192.168.0.71/24
+      vtep_loopback_ipv4_address: 10.1.6.101
+      l3_interfaces:
+        - name: Ethernet2
+          ip_address: 192.6.101.2/30
+          wan_carrier: internet
+wan_stun_dtls_disable: True  # Disable dTLS for STUN, for the lab. (NOT recommended in production)

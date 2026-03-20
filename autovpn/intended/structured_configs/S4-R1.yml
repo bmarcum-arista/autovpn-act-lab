@@ -1,0 +1,418 @@
+aaa_root:
+  disabled: true
+agents:
+- name: KernelFib
+  environment_variables:
+  - name: KERNELFIB_PROGRAM_ALL_ECMP
+    value: '''true'''
+application_traffic_recognition:
+  field_sets:
+    ipv4_prefixes:
+    - name: PFX-PATHFINDERS
+      prefix_values:
+      - 10.1.2.103/32
+      - 10.1.1.103/32
+  applications:
+    ipv4_applications:
+    - name: APP-CONTROL-PLANE
+      dest_prefix_set_name: PFX-PATHFINDERS
+  application_profiles:
+  - name: APP-PROFILE-CONTROL-PLANE
+    applications:
+    - name: APP-CONTROL-PLANE
+config_end: true
+daemon_terminattr:
+  cvaddrs:
+  - apiserver.cv-staging.corp.arista.io:443
+  cvauth:
+    method: token-secure
+    token_file: /tmp/cv-onboarding-token
+  cvvrf: default
+  disable_aaa: true
+  ingestexclude: /Sysdb/cell/1/agent,/Sysdb/cell/2/agent
+  smashexcludes: ale,flexCounter,hardware,kni,pulse,strata
+dps_interfaces:
+- name: Dps1
+  description: DPS Interface
+  mtu: 9194
+  ip_address: 10.1.6.101/32
+  flow_tracker:
+    hardware: FLOW-TRACKER
+enable_password:
+  disabled: true
+ethernet_interfaces:
+- name: Ethernet2
+  description: internet
+  shutdown: false
+  flow_tracker:
+    hardware: FLOW-TRACKER
+  ip_address: 192.6.101.2/30
+  metadata:
+    peer_type: l3_interface
+  switchport:
+    enabled: false
+- name: Ethernet1
+  flow_tracker:
+    hardware: FLOW-TRACKER
+flow_tracking:
+  hardware:
+    trackers:
+    - name: FLOW-TRACKER
+      record_export:
+        on_inactive_timeout: 70000
+        on_interval: 300000
+      exporters:
+      - name: CV-TELEMETRY
+        collectors:
+        - host: 127.0.0.1
+        local_interface: Loopback0
+        template_interval: 3600000
+    shutdown: false
+hostname: S4-R1
+ip_extcommunity_lists:
+- name: ECL-EVPN-SOO
+  entries:
+  - type: permit
+    extcommunities: soo 10.0.6.101:160
+ip_name_server:
+  vrfs:
+  - name: default
+    servers:
+    - ip_address: 8.8.4.4
+    - ip_address: 8.8.8.8
+ip_routing: true
+ip_security:
+  ike_policies:
+  - name: CP-IKE-POLICY
+    local_id: 10.1.6.101
+  sa_policies:
+  - name: DP-SA-POLICY
+    esp:
+      encryption: aes256gcm128
+    pfs_dh_group: 14
+  - name: CP-SA-POLICY
+    esp:
+      encryption: aes256gcm128
+    pfs_dh_group: 14
+  profiles:
+  - name: DP-PROFILE
+    sa_policy: DP-SA-POLICY
+    connection: start
+    shared_key: 0110100A480E0A0E231D1E
+    dpd:
+      interval: 10
+      time: 50
+      action: clear
+    mode: transport
+  - name: CP-PROFILE
+    ike_policy: CP-IKE-POLICY
+    sa_policy: CP-SA-POLICY
+    connection: start
+    shared_key: 0110100A480E0A0E231D1E
+    dpd:
+      interval: 10
+      time: 50
+      action: clear
+    mode: transport
+  key_controller:
+    profile: DP-PROFILE
+kernel:
+  software_forwarding_ecmp: true
+loopback_interfaces:
+- name: Loopback0
+  description: ROUTER_ID
+  shutdown: false
+  ip_address: 10.0.6.101/32
+management_interfaces:
+- name: Management1
+  description: OOB_MANAGEMENT
+  shutdown: false
+  vrf: default
+  ip_address: 192.168.0.71/24
+  type: oob
+management_ssh:
+  client_alive:
+    interval: 240
+metadata:
+  is_deployed: true
+  fabric_name: WAN
+  cv_tags:
+    device_tags:
+    - name: Role
+      value: edge
+    - name: Region
+      value: region1
+    - name: Zone
+      value: region1-ZONE
+    - name: Site
+      value: site04
+    interface_tags:
+    - interface: Ethernet2
+      tags:
+      - name: Type
+        value: wan
+      - name: Carrier
+        value: internet
+  cv_pathfinder:
+    role: edge
+    region: region1
+    zone: region1-ZONE
+    site: site04
+    vtep_ip: 10.1.6.101
+    pathfinders:
+    - vtep_ip: 10.1.2.103
+    - vtep_ip: 10.1.1.103
+    interfaces:
+    - name: Ethernet2
+      carrier: internet
+      pathgroup: internet
+ntp:
+  servers:
+  - name: 0.us.pool.ntp.org
+    preferred: true
+  vrf: default
+prefix_lists:
+- name: PL-LOOPBACKS-EVPN-OVERLAY
+  sequence_numbers:
+  - sequence: 10
+    action: permit 10.0.0.0/24 eq 32
+route_maps:
+- name: RM-CONN-2-BGP
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    match:
+    - ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY
+    set:
+    - extcommunity soo 10.0.6.101:160 additive
+- name: RM-EVPN-SOO-IN
+  sequence_numbers:
+  - sequence: 10
+    type: deny
+    match:
+    - extcommunity ECL-EVPN-SOO
+  - sequence: 20
+    type: permit
+- name: RM-EVPN-SOO-OUT
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    set:
+    - extcommunity soo 10.0.6.101:160 additive
+- name: RM-EVPN-EXPORT-VRF-DEFAULT
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    match:
+    - extcommunity ECL-EVPN-SOO
+router_adaptive_virtual_topology:
+  topology_role: edge
+  region:
+    name: region1
+    id: 1
+  zone:
+    name: region1-ZONE
+    id: 1
+  site:
+    name: site04
+    id: 160
+  profiles:
+  - name: DEFAULT-AVT-POLICY-CONTROL-PLANE
+    load_balance_policy: LB-DEFAULT-AVT-POLICY-CONTROL-PLANE
+  - name: DEFAULT-AVT-POLICY-DEFAULT
+    load_balance_policy: LB-DEFAULT-AVT-POLICY-DEFAULT
+  - name: PROD-AVT-POLICY-DEFAULT
+    load_balance_policy: LB-PROD-AVT-POLICY-DEFAULT
+  policies:
+  - name: DEFAULT-AVT-POLICY-WITH-CP
+    matches:
+    - application_profile: APP-PROFILE-CONTROL-PLANE
+      avt_profile: DEFAULT-AVT-POLICY-CONTROL-PLANE
+    - application_profile: default
+      avt_profile: DEFAULT-AVT-POLICY-DEFAULT
+  - name: PROD-AVT-POLICY
+    matches:
+    - application_profile: default
+      avt_profile: PROD-AVT-POLICY-DEFAULT
+  vrfs:
+  - name: default
+    policy: DEFAULT-AVT-POLICY-WITH-CP
+    profiles:
+    - name: DEFAULT-AVT-POLICY-CONTROL-PLANE
+      id: 254
+    - name: DEFAULT-AVT-POLICY-DEFAULT
+      id: 1
+  - name: A
+    policy: PROD-AVT-POLICY
+    profiles:
+    - name: PROD-AVT-POLICY-DEFAULT
+      id: 1
+router_bfd:
+  multihop:
+    interval: 300
+    min_rx: 300
+    multiplier: 3
+router_bgp:
+  as: '64512'
+  router_id: 10.0.6.101
+  maximum_paths:
+    paths: 16
+  bgp:
+    default:
+      ipv4_unicast: false
+  peer_groups:
+  - name: WAN-OVERLAY-PEERS
+    metadata:
+      type: wan
+    remote_as: '64512'
+    update_source: Dps1
+    bfd: true
+    bfd_timers:
+      interval: 1000
+      min_rx: 1000
+      multiplier: 10
+    password: n84OloP0zi9y59YbK3UctA==
+    send_community: all
+    maximum_routes: 0
+    ttl_maximum_hops: 1
+  neighbors:
+  - ip_address: 10.1.2.103
+    peer_group: WAN-OVERLAY-PEERS
+    metadata:
+      peer: EAST-R1
+    description: EAST-R1_Dps1
+  - ip_address: 10.1.1.103
+    peer_group: WAN-OVERLAY-PEERS
+    metadata:
+      peer: WEST-R1
+    description: WEST-R1_Dps1
+  redistribute:
+    connected:
+      enabled: true
+      route_map: RM-CONN-2-BGP
+  address_family_evpn:
+    peer_groups:
+    - name: WAN-OVERLAY-PEERS
+      activate: true
+      route_map_in: RM-EVPN-SOO-IN
+      route_map_out: RM-EVPN-SOO-OUT
+      encapsulation: path-selection
+  address_family_ipv4:
+    peer_groups:
+    - name: WAN-OVERLAY-PEERS
+      activate: false
+  address_family_ipv4_sr_te:
+    peer_groups:
+    - name: WAN-OVERLAY-PEERS
+      activate: true
+  address_family_link_state:
+    peer_groups:
+    - name: WAN-OVERLAY-PEERS
+      activate: true
+    path_selection:
+      roles:
+        producer: true
+  address_family_path_selection:
+    bgp:
+      additional_paths:
+        receive: true
+        send: any
+    peer_groups:
+    - name: WAN-OVERLAY-PEERS
+      activate: true
+  vrfs:
+  - name: A
+    rd: 10.0.6.101:102
+    route_targets:
+      import:
+      - address_family: evpn
+        route_targets:
+        - 64512:102
+      export:
+      - address_family: evpn
+        route_targets:
+        - 64512:102
+    router_id: 10.0.6.101
+    redistribute:
+      connected:
+        enabled: true
+  - name: default
+    rd: 10.0.6.101:101
+    route_targets:
+      import:
+      - address_family: evpn
+        route_targets:
+        - 64512:101
+      export:
+      - address_family: evpn
+        route_targets:
+        - 64512:101
+        - route-map RM-EVPN-EXPORT-VRF-DEFAULT
+router_path_selection:
+  path_groups:
+  - name: internet
+    id: 101
+    ipsec_profile: CP-PROFILE
+    local_interfaces:
+    - name: Ethernet2
+      stun:
+        server_profiles:
+        - internet-EAST-R1-Ethernet2
+        - internet-WEST-R1-Ethernet2
+    dynamic_peers:
+      enabled: true
+    static_peers:
+    - router_ip: 10.1.2.103
+      name: EAST-R1
+      ipv4_addresses:
+      - 192.2.103.2
+    - router_ip: 10.1.1.103
+      name: WEST-R1
+      ipv4_addresses:
+      - 192.1.103.2
+  load_balance_policies:
+  - name: LB-DEFAULT-AVT-POLICY-CONTROL-PLANE
+    path_groups:
+    - name: internet
+  - name: LB-DEFAULT-AVT-POLICY-DEFAULT
+    path_groups:
+    - name: internet
+  - name: LB-PROD-AVT-POLICY-DEFAULT
+    path_groups:
+    - name: internet
+  tcp_mss_ceiling:
+    ipv4: auto
+router_traffic_engineering:
+  enabled: true
+service_routing_protocols_model: multi-agent
+spanning_tree:
+  mode: none
+stun:
+  client:
+    server_profiles:
+    - name: internet-EAST-R1-Ethernet2
+      ip_address: 192.2.103.2
+    - name: internet-WEST-R1-Ethernet2
+      ip_address: 192.1.103.2
+switchport_default:
+  mode: routed
+transceiver_qsfp_default_mode_4x10: false
+vrfs:
+- name: default
+  ip_routing: false
+- name: A
+  ip_routing: true
+  metadata:
+    tenants:
+    - AUTOVPN-TENANT
+vxlan_interface:
+  vxlan1:
+    description: S4-R1_VTEP
+    vxlan:
+      source_interface: Dps1
+      udp_port: 4789
+      vrfs:
+      - name: A
+        vni: 102
+      - name: default
+        vni: 101

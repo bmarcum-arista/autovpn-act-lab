@@ -1,0 +1,11 @@
+---
+
+# Site 2 Router Configuration
+
+custom_structured_configuration_ethernet_interfaces:
+- name: Ethernet1
+  flow_tracker:
+    hardware: FLOW-TRACKER
+- name: Ethernet2
+  flow_tracker:
+    hardware: FLOW-TRACKER
