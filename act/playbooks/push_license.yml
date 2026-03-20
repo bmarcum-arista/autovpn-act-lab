@@ -1,0 +1,19 @@
+---
+# Copies the [CloudEOS IPSec license](https://www.arista.com/en/support/product-documentation/eos-feature-licensing/virtual-networking) to flash and activates it
+
+- name: Copy and install IPSec license
+  hosts: CLOUDEOS
+  gather_facts: false
+
+  tasks:
+
+    - name: Copy license file to device flash
+      ansible.netcommon.net_put:
+        src: "../../license_CloudEOS_IPSec.json"
+        dest: "ipsec-license.json"
+
+    - name: Import license
+      arista.eos.eos_command:
+        commands:
+          - "license import flash:ipsec-license.json"
+          - "license update"
