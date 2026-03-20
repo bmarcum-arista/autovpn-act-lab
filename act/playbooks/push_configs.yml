@@ -1,0 +1,12 @@
+---
+# Pushes static infrastructure configs from act/configs/ directly to VEOS devices
+
+- name: Push infrastructure configurations
+  hosts: VEOS
+  gather_facts: false
+
+  tasks:
+
+    - name: Push configuration to device
+      arista.eos.eos_config:
+        src: "../configs/{{ inventory_hostname }}.cfg"
