@@ -1,0 +1,17 @@
+l3_interface_profiles:
+  - profile: INTERNET-HUB-WAN-INTERFACE
+    peer: inet-cloud
+    ip_address: dhcp
+    dhcp_accept_default_route: true
+    ipv4_acl_in: ACL-HUB-INTERNET-IN
+    # Enabling flow tracking on WAN interfaces
+    flow_tracking:
+      enabled: true
+  - profile: INTERNET-SPOKE-WAN-INTERFACE
+    peer: inet-cloud
+    ip_address: dhcp
+    dhcp_accept_default_route: true
+    ipv4_acl_in: ACL-SPOKE-INTERNET-IN
+    # Enabling flow tracking on WAN interfaces
+    flow_tracking:
+      enabled: true

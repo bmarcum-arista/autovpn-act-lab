@@ -36,6 +36,7 @@
   - [Service Routing Protocols Model](#service-routing-protocols-model)
   - [IP Routing](#ip-routing)
   - [IPv6 Routing](#ipv6-routing)
+  - [Static Routes](#static-routes)
   - [Router Adaptive Virtual Topology](#router-adaptive-virtual-topology)
   - [Router Traffic-Engineering](#router-traffic-engineering)
   - [Router BGP](#router-bgp)
@@ -45,6 +46,8 @@
   - [Prefix-lists](#prefix-lists)
   - [Route-maps](#route-maps)
   - [IP Extended Community Lists](#ip-extended-community-lists)
+- [ACL](#acl)
+  - [IP Access-lists](#ip-access-lists)
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
   - [VRF Instances Device Configuration](#vrf-instances-device-configuration)
@@ -245,7 +248,7 @@ daemon TerminAttr
 
 | Tracker Name | Record Export On Inactive Timeout | Record Export On Interval | Number of Exporters | Applied On |
 | ------------ | --------------------------------- | ------------------------- | ------------------- | ---------- |
-| FLOW-TRACKER | 70000 | 300000 | 1 | Dps1 |
+| FLOW-TRACKER | 70000 | 300000 | 1 | Dps1<br>Ethernet2 |
 
 ##### Exporters Summary
 
@@ -371,17 +374,19 @@ interface Dps1
 
 | Interface | Description | Channel Group | IP Address | VRF | MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | ------------- | ---------- | --- | --- | -------- | ------ | ------- |
-| Ethernet2 | internet | - | 192.2.103.2/30 | default | - | False | - | - |
+| Ethernet2 | internet_inet-cloud | - | 192.2.103.2/30 | default | - | False | ACL-HUB-INTERNET-IN_Ethernet2 | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet2
-   description internet
+   description internet_inet-cloud
    no shutdown
    no switchport
+   flow tracker hardware FLOW-TRACKER
    ip address 192.2.103.2/30
+   ip access-group ACL-HUB-INTERNET-IN_Ethernet2 in
 ```
 
 ### Loopback Interfaces
@@ -475,6 +480,21 @@ ip routing vrf A
 | default | False |
 | A | false |
 | default | false |
+
+### Static Routes
+
+#### Static Routes Summary
+
+| VRF | Destination Prefix | Next Hop IP | Exit interface | Administrative Distance | Tag | Route Name | Metric |
+| --- | ------------------ | ----------- | -------------- | ----------------------- | --- | ---------- | ------ |
+| default | 192.0.0.0/13 | 192.2.103.1 | - | 1 | - | - | - |
+
+#### Static Routes Device Configuration
+
+```eos
+!
+ip route 192.0.0.0/13 192.2.103.1
+```
 
 ### Router Adaptive Virtual Topology
 
@@ -717,6 +737,7 @@ router bgp 64512
    neighbor WAN-RR-OVERLAY-PEERS bfd interval 1000 min-rx 1000 multiplier 10
    neighbor WAN-RR-OVERLAY-PEERS ttl maximum-hops 1
    neighbor WAN-RR-OVERLAY-PEERS route-reflector-client
+   neighbor WAN-RR-OVERLAY-PEERS password 7 <removed>
    neighbor WAN-RR-OVERLAY-PEERS send-community
    neighbor WAN-RR-OVERLAY-PEERS maximum-routes 0
    neighbor 10.1.1.103 peer group WAN-RR-OVERLAY-PEERS
@@ -842,6 +863,22 @@ route-map RM-EVPN-EXPORT-VRF-DEFAULT permit 10
 
 ```eos
 ip extcommunity-list ECL-EVPN-SOO permit soo 10.0.2.103:0
+```
+
+## ACL
+
+### IP Access-lists
+
+#### IP Access-lists Device Configuration
+
+```eos
+!
+ip access-list ACL-HUB-INTERNET-IN_Ethernet2
+   1 remark Not for PRODUCTION: This ACL is built this way for the lab
+   10 permit udp any host 192.2.103.2 eq isakmp non500-isakmp
+   20 permit udp any host 192.2.103.2 eq 3478
+   30 permit icmp any host 192.2.103.2
+   deny ip any any
 ```
 
 ## VRF Instances

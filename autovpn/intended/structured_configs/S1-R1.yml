@@ -43,14 +43,17 @@ dps_interfaces:
     hardware: FLOW-TRACKER
 enable_password:
   disabled: true
+eos_cli: "router adaptive-virtual-topology\n  wan fabric\n    peer role edge\n      rule NoP2P region self zone self site exclude all"
 ethernet_interfaces:
 - name: Ethernet2
-  description: internet
+  description: internet_inet-cloud
   shutdown: false
   flow_tracker:
     hardware: FLOW-TRACKER
   ip_address: 192.3.101.2/30
+  access_group_in: ACL-SPOKE-INTERNET-IN_Ethernet2
   metadata:
+    peer: inet-cloud
     peer_type: l3_interface
   switchport:
     enabled: false
@@ -72,6 +75,29 @@ flow_tracking:
         template_interval: 3600000
     shutdown: false
 hostname: S1-R1
+ip_access_lists:
+- name: ACL-SPOKE-INTERNET-IN_Ethernet2
+  entries:
+  - sequence: 1
+    remark: 'Not for PRODUCTION: This ACL is built this way for the lab'
+  - sequence: 10
+    action: permit
+    protocol: udp
+    source: any
+    destination: 192.3.101.2
+    destination_ports_match: eq
+    destination_ports:
+    - isakmp
+    - non500-isakmp
+  - sequence: 30
+    action: permit
+    protocol: icmp
+    source: any
+    destination: 192.3.101.2
+  - action: deny
+    protocol: ip
+    source: any
+    destination: any
 ip_extcommunity_lists:
 - name: ECL-EVPN-SOO
   entries:
@@ -403,6 +429,9 @@ router_traffic_engineering:
 service_routing_protocols_model: multi-agent
 spanning_tree:
   mode: none
+static_routes:
+- prefix: 192.0.0.0/13
+  next_hop: 192.3.101.1
 stun:
   client:
     server_profiles:

@@ -49,6 +49,60 @@ dns_settings:
     - ip_address: 8.8.8.8
       vrf: default
 
+ipv4_acls:
+  - name: ACL-HUB-INTERNET-IN
+    entries:
+      - sequence: 1
+        remark: "Not for PRODUCTION: This ACL is built this way for the lab"
+      - sequence: 10
+        # IPSec traffic from anywhere
+        action: permit
+        protocol: udp
+        source: any
+        destination: interface_ip
+        destination_ports_match: eq
+        destination_ports: [isakmp, non500-isakmp]
+      - sequence: 20
+        # STUN traffic from anywhere
+        action: permit
+        protocol: udp
+        source: any
+        destination: interface_ip
+        destination_ports_match: eq
+        destination_ports: [3478]
+      - sequence: 30
+        # Troubleshooting
+        action: permit
+        protocol: icmp
+        source: any
+        destination: interface_ip
+      - action: deny
+        protocol: ip
+        source: any
+        destination: any
+  - name: ACL-SPOKE-INTERNET-IN
+    entries:
+      - sequence: 1
+        remark: "Not for PRODUCTION: This ACL is built this way for the lab"
+      - sequence: 10
+        # IPSec traffic from anywhere
+        action: permit
+        protocol: udp
+        source: any
+        destination: interface_ip
+        destination_ports_match: eq
+        destination_ports: [isakmp, non500-isakmp]
+      - sequence: 30
+        # Troubleshooting
+        action: permit
+        protocol: icmp
+        source: any
+        destination: interface_ip
+      - action: deny
+        protocol: ip
+        source: any
+        destination: any
+
 skipped_tests:
   - category: AvdTestHardware
     tests:

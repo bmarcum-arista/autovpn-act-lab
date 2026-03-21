@@ -10,3 +10,4 @@
     - name: Push configuration to device
       arista.eos.eos_config:
         src: "../configs/{{ inventory_hostname }}.cfg"
+        save_when: modified

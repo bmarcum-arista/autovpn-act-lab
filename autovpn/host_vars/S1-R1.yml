@@ -11,8 +11,8 @@ custom_structured_configuration_ethernet_interfaces:
     hardware: FLOW-TRACKER
 
 # # Disable Full Mesh (SPOKE-TO-SPOKE) to enforce HUB & SPOKE
-# custom_structured_configuration_eos_cli: |-
-#   router adaptive-virtual-topology
-#     wan fabric
-#       peer role edge
-#         rule NoP2P region self zone self site exclude all
+custom_structured_configuration_eos_cli: |-
+  router adaptive-virtual-topology
+    wan fabric
+      peer role edge
+        rule NoP2P region self zone self site exclude all

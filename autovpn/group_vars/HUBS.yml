@@ -18,8 +18,12 @@ wan_rr: # dynamic_key: node_type
       vtep_loopback_ipv4_address: 10.1.1.103
       l3_interfaces:
         - name: Ethernet2
+          profile: INTERNET-HUB-WAN-INTERFACE
           ip_address: 192.1.103.2/30
           wan_carrier: internet
+          static_routes:
+          - prefix: 192.0.0.0/13
+          peer_ip: 192.1.103.1
     - name: EAST-R1
       id: 2
       loopback_ipv4_address: 10.0.2.103
@@ -27,6 +31,13 @@ wan_rr: # dynamic_key: node_type
       vtep_loopback_ipv4_address: 10.1.2.103
       l3_interfaces:
         - name: Ethernet2
+          profile: INTERNET-HUB-WAN-INTERFACE
           ip_address: 192.2.103.2/30
           wan_carrier: internet
-wan_stun_dtls_disable: True # Disable dTLS for STUN, for the lab. (NOT recommended in production)
+          static_routes:
+          - prefix: 192.0.0.0/13
+          peer_ip: 192.2.103.1
+# DTLS for STUN is enabled by default
+# It requires certificates to be generated and distributed on the participating
+# devices. To disable it for a lab, uncomment the following line.
+wan_stun_dtls_disable: True
