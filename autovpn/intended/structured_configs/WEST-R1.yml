@@ -432,9 +432,17 @@ router_bgp:
         route_targets:
         - 64512:102
     router_id: 10.0.1.103
+    neighbors:
+    - ip_address: 21.101.103.101
+      remote_as: '65001'
+      description: WEST-AGG
     redistribute:
       connected:
         enabled: true
+    address_family_ipv4:
+      neighbors:
+      - ip_address: 21.101.103.101
+        activate: true
   - name: default
     rd: 10.0.1.103:101
     route_targets:

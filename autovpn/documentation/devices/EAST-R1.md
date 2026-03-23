@@ -665,6 +665,7 @@ ASN Notation: asplain
 | Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client | Passive | TTL Max Hops |
 | -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- | ------- | ------------ |
 | 10.1.1.103 | Inherited from peer group WAN-RR-OVERLAY-PEERS | default | - | Inherited from peer group WAN-RR-OVERLAY-PEERS | Inherited from peer group WAN-RR-OVERLAY-PEERS | - | Inherited from peer group WAN-RR-OVERLAY-PEERS(interval: 1000, min_rx: 1000, multiplier: 10) | - | Inherited from peer group WAN-RR-OVERLAY-PEERS | - | Inherited from peer group WAN-RR-OVERLAY-PEERS |
+| 22.101.103.101 | 65002 | A | - | - | - | - | - | - | - | - | - |
 
 #### Router BGP EVPN Address Family
 
@@ -783,7 +784,12 @@ router bgp 64512
       route-target import evpn 64512:102
       route-target export evpn 64512:102
       router-id 10.0.2.103
+      neighbor 22.101.103.101 remote-as 65002
+      neighbor 22.101.103.101 description EAST-AGG
       redistribute connected
+      !
+      address-family ipv4
+         neighbor 22.101.103.101 activate
    !
    vrf default
       rd 10.0.2.103:101
