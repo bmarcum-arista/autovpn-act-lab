@@ -1,0 +1,28 @@
+---
+# Configures Ubuntu hosts in the TOOLSSERVER group
+
+- name: Configure tools servers
+  hosts: TOOLSSERVER
+  gather_facts: false
+  become: true
+
+  tasks:
+
+    - name: Set default shell for arista user to bash
+      ansible.builtin.user:
+        name: arista
+        shell: /bin/bash
+
+    - name: Push netplan config for et2
+      ansible.builtin.template:
+        src: ../templates/99-et2.yaml.j2
+        dest: /etc/netplan/99-et2.yaml
+        owner: root
+        group: root
+        mode: "0600"
+      notify: Apply netplan
+
+  handlers:
+
+    - name: Apply netplan
+      ansible.builtin.command: netplan apply

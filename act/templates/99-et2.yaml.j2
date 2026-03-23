@@ -1,0 +1,33 @@
+network:
+  version: 2
+  ethernets:
+    et2:
+      addresses:
+        - {{ et2_address }}
+      routes:
+        # Host subnets
+        - to: 10.10.10.0/24
+          via: {{ et2_gateway }}
+        - to: 10.20.20.0/24
+          via: {{ et2_gateway }}
+        - to: 10.30.30.0/24
+          via: {{ et2_gateway }}
+        - to: 10.40.40.0/24
+          via: {{ et2_gateway }}
+        - to: 10.50.50.0/24
+          via: {{ et2_gateway }}
+        - to: 10.60.60.0/24
+          via: {{ et2_gateway }}
+        - to: 10.70.70.0/24
+          via: {{ et2_gateway }}
+        - to: 10.80.80.0/24
+          via: {{ et2_gateway }}
+        # Device loopbacks (CORE, WEST-AGG/DC/R1, EAST-AGG/DC/R1)
+        - to: 10.0.0.0/22
+          via: {{ et2_gateway }}
+        # WEST-side infrastructure P2P links
+        - to: 21.101.0.0/16
+          via: {{ et2_gateway }}
+        # EAST-side infrastructure P2P links
+        - to: 22.101.0.0/16
+          via: {{ et2_gateway }}

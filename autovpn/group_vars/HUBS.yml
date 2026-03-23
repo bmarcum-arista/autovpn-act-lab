@@ -5,7 +5,9 @@ type: wan_rr
 
 wan_rr: # dynamic_key: node_type
   defaults:
-    data_plane_cpu_allocation_max: 1
+    # Set the maximum number of CPU used for the data plane.
+    # This setting is useful on virtual Route Reflectors and Pathfinders where more CPU cores should be allocated for control plane.
+    data_plane_cpu_allocation_max: 1 # Set to 1 for Lab, Set to 2 for AWE-7250R-16S
     loopback_ipv4_pool: 10.0.0.0/24
     vtep_loopback_ipv4_pool: 10.1.0.0/24
     filter:
@@ -37,6 +39,7 @@ wan_rr: # dynamic_key: node_type
           static_routes:
           - prefix: 192.0.0.0/13
           peer_ip: 192.2.103.1
+
 # DTLS for STUN is enabled by default
 # It requires certificates to be generated and distributed on the participating
 # devices. To disable it for a lab, uncomment the following line.

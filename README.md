@@ -46,7 +46,8 @@ This lab simulates a WAN fabric using Arista's **AutoVPN** solution. Two hub rou
 │   └── playbooks/
 │       ├── cvaas-onboarding.yml   # Onboard devices to CVaaS via TerminAttr
 │       ├── push_configs.yml       # Push static configs to VEOS infrastructure devices
-│       └── push_license.yml       # Push CloudEOS IPSec license to flash and activate
+│       ├── push_license.yml       # Push CloudEOS IPSec license to flash and activate
+│       └── configure_hosts.yml    # Configure Ubuntu tools servers (TOOLSSERVER group)
 │
 └── autovpn/                    # AVD WAN fabric
     ├── inventory.yml
@@ -99,7 +100,14 @@ ansible-playbook playbooks/push_configs.yml
 
 Pushes static configurations (interfaces, routing, AAA) to the VEOS infrastructure devices: CORE, INTERNET, AGG, DC, and site access switches.
 
-### 6. Push the CloudEOS IPSec license
+### 6. Configure tools servers
+
+```bash
+cd act
+ansible-playbook playbooks/configure_hosts.yml
+```
+
+### 7. Push the CloudEOS IPSec license
 
 ```bash
 cd act
@@ -108,7 +116,7 @@ ansible-playbook -i inventory.yml playbooks/push_license.yml
 
 Requires the license file at `../license_CloudEOS_IPSec.json`.
 
-### 7. Build configurations with AVD
+### 8. Build configurations with AVD
 
 Run inside the AVD devcontainer:
 
@@ -119,7 +127,7 @@ ansible-playbook -i inventory.yml playbooks/build.yml
 
 Generates structured configs and EOS CLI configs under `autovpn/intended/`.
 
-### 8. Submit configurations to CloudVision
+### 9. Submit configurations to CloudVision
 
 ```bash
 cd autovpn
@@ -128,7 +136,7 @@ ansible-playbook -i inventory.yml playbooks/cv-deploy.yml
 
 This creates a change control in CVaaS.
 
-### 9. Review and execute the change control in CVaaS
+### 10. Review and execute the change control in CVaaS
 
 Log in to CVaaS and navigate to **Provisioning > Change Control**. Review the proposed configuration changes, then approve and execute the change control to deploy configs to the devices.
 

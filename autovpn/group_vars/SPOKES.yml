@@ -68,4 +68,9 @@ wan_router:  # dynamic_key: node_type
           static_routes:
           - prefix: 192.0.0.0/13
           peer_ip: 192.6.101.1
-wan_stun_dtls_disable: True  # Disable dTLS for STUN, for the lab. (NOT recommended in production)
+
+# DTLS for STUN is enabled by default
+# It requires certificates to be generated and distributed on the participating
+# devices. To disable it for a lab, uncomment the following line.
+wan_stun_dtls_disable: True
+
