@@ -140,5 +140,164 @@ A change control is now created in CVaaS.
 
 Log in to CVaaS and navigate to **Provisioning > Change Control**. Review the proposed configuration changes, then approve and execute the change control to deploy configs to the devices.
 
-## Topology Validation Commands and Troubleshooting
+## Validation
 
+### Host IP Addressing (VRF A)
+
+| Host | Site | Interface | IP Address | Gateway |
+|------|------|-----------|------------|---------|
+| HOST-A1 | WEST DC | et2 | 10.10.10.101/24 | 10.10.10.1 (WEST-DC) |
+| HOST-A2 | WEST DC | et2 | 10.20.20.101/24 | 10.20.20.1 (WEST-DC) |
+| HOST-B1 | EAST DC | et2 | 10.30.30.101/24 | 10.30.30.1 (EAST-DC) |
+| HOST-B2 | EAST DC | et2 | 10.40.40.101/24 | 10.40.40.1 (EAST-DC) |
+| HOST-C1 | Site 1 | et2 | 10.50.50.101/24 | 10.50.50.1 (S1-R1) |
+| HOST-D1 | Site 2 | et2 | 10.60.60.101/24 | 10.60.60.1 (S2-R1) |
+| HOST-E1 | Site 3 | et2 | 10.70.70.101/24 | 10.70.70.1 (S3-R1) |
+| HOST-F1 | Site 4 | et2 | 10.80.80.101/24 | 10.80.80.1 (S4-R1) |
+
+### Router Loopback and DPS Addresses
+
+| Device | Role | Loopback0 | Dps1 |
+|--------|------|-----------|------|
+| WEST-R1 | Hub | 10.0.1.103 | 10.1.1.103 |
+| EAST-R1 | Hub | 10.0.2.103 | 10.1.2.103 |
+| S1-R1 | Spoke | 10.0.3.101 | 10.1.3.101 |
+| S2-R1 | Spoke | 10.0.4.101 | 10.1.4.101 |
+| S3-R1 | Spoke | 10.0.5.101 | 10.1.5.101 |
+| S4-R1 | Spoke | 10.0.6.101 | 10.1.6.101 |
+
+### End-to-End Ping Tests
+
+SSH into any host and ping across sites. Routes for lab subnets are pre-configured via netplan on `et2`, so no `-I` flag is needed.
+
+| From | To | Command |
+|------|----|---------|
+| HOST-A1 | HOST-C1 (Site 1) | `ping 10.50.50.101` |
+| HOST-A1 | HOST-D1 (Site 2) | `ping 10.60.60.101` |
+| HOST-A1 | HOST-E1 (Site 3) | `ping 10.70.70.101` |
+| HOST-A1 | HOST-F1 (Site 4) | `ping 10.80.80.101` |
+| HOST-B1 | HOST-C1 (Site 1) | `ping 10.50.50.101` |
+| HOST-C1 | HOST-D1 (Site 2) | `ping 10.60.60.101` |
+| HOST-C1 | HOST-F1 (Site 4) | `ping 10.80.80.101` |
+
+## Troubleshooting
+
+AutoVPN establishes connectivity in a defined sequence. Work through each step in order — each depends on the previous.
+
+### Step 1: Verify STUN Mappings
+
+WEST-R1 and EAST-R1 act as STUN servers. Each spoke must register its public IP and port before tunnels can form.
+
+**On WEST-R1 or EAST-R1 (STUN server):**
+```
+show stun server bindings detail
+```
+Verify each spoke's loopback (`10.0.3.101` – `10.0.6.101`) appears with a valid public IP and port.
+
+**On a spoke (S1-R1 – S4-R1):**
+```
+show stun client translations detail
+```
+Verify the public address is populated and matches expectations.
+
+**Common issues:**
+- No default-VRF reachability to the hub's public IP (check `show ip route` for internet path)
+- Incorrect STUN server IP in `stun client server-profile`
+- STUN profile not attached under `router path-selection / path-group / local interface`
+
+---
+
+### Step 2: Verify IPSec
+
+Each spoke builds a static IPSec tunnel to both WEST-R1 and EAST-R1. Verify bidirectional traffic counters are incrementing.
+
+**On a spoke:**
+```
+show ip security connection detail
+```
+Check that `State: established` and that both inbound and outbound packet counts are non-zero.
+
+**If IPSec is not forming, check the IKE/IPSec log:**
+```
+bash
+tail -f /var/log/charon.log
+```
+
+**Common issues:**
+- Mismatched preshared key
+- IPSec profile not applied to the path group
+- NAT/PAT asymmetry causing unidirectional traffic
+
+---
+
+### Step 3: Verify DPS Connectivity
+
+DPS injects `/32` host routes via `Dps1` for each remote loopback. Verify the hub loopbacks are reachable before BGP can establish.
+
+**On a spoke:**
+```
+show ip route interface Dps1
+```
+Expect `/32` routes for `10.0.1.103` (WEST-R1) and `10.0.2.103` (EAST-R1) at minimum.
+
+```
+ping 10.0.1.103
+ping 10.0.2.103
+```
+
+**Common issues:**
+- Missing path-selection policy for the default VRF under `router path-selection`
+- Incorrect `Vxlan1` source interface configuration
+
+---
+
+### Step 4: Verify BGP
+
+Each spoke peers with WEST-R1 and EAST-R1 over BGP path-selection (AFI/SAFI 1/79) and EVPN (AFI/SAFI 25/70).
+
+**On a spoke — path-selection AF:**
+```
+show bgp path-selection summary
+show bgp path-selection
+```
+Verify neighbors are `Estab` and that endpoint (`ipv4Dps`) and key (`ipv4Ipsec`) routes are present for all remote loopbacks.
+
+**On a spoke — EVPN AF:**
+```
+show bgp evpn summary
+```
+Verify neighbors are `Estab`.
+
+**On a hub — verify all spokes are peered:**
+```
+show bgp path-selection summary
+show bgp evpn summary
+```
+
+**Common issues:**
+- Wrong neighbor IP, AS, or update-source
+- Address family not activated
+- `show log | grep BGP` for session errors
+
+---
+
+### Step 5: Verify VRF A Routes and End-to-End Traffic
+
+User routes are distributed via EVPN and should appear in VRF A on each device.
+
+**On a spoke:**
+```
+show ip route vrf A
+```
+Expect EVPN-learned (`B I`) routes for all remote host subnets (`10.10.10.0/24` – `10.80.80.0/24`).
+
+**Ping across the overlay from a spoke:**
+```
+ping vrf A 10.10.10.101   # S1-R1 → HOST-A1
+ping vrf A 10.60.60.101   # S1-R1 → HOST-D1
+```
+
+**Common issues:**
+- Routes received in BGP EVPN but missing from VRF routing table — check route-target import/export values
+- Routes present but traffic not flowing — verify VNI mapping under `interface Vxlan1` and that a path-selection policy is applied to VRF A under `router path-selection`
+- Verify underlay reachability by pinging the next-hop loopback shown in the route table
