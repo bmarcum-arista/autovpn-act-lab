@@ -43,4 +43,4 @@ wan_rr: # dynamic_key: node_type
 # DTLS for STUN is enabled by default
 # It requires certificates to be generated and distributed on the participating
 # devices. To disable it for a lab, uncomment the following line.
-wan_stun_dtls_disable: True
+wan_stun_dtls_disable: true

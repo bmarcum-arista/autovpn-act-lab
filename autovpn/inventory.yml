@@ -5,16 +5,16 @@ all:
         HUBS:
           hosts:
             WEST-R1:
-              ansible_host: 10.18.128.61
+              ansible_host: 10.18.130.133
             EAST-R1:
-              ansible_host: 10.18.128.51
+              ansible_host: 10.18.130.117
         SPOKES:
           hosts:
             S1-R1:
-              ansible_host: 10.18.128.67
+              ansible_host: 10.18.130.99
             S2-R1:
-              ansible_host: 10.18.157.97
+              ansible_host: 10.18.130.128
             S3-R1:
-              ansible_host: 10.18.157.96
+              ansible_host: 10.18.130.132
             S4-R1:
-              ansible_host: 10.18.157.92
+              ansible_host: 10.18.130.129

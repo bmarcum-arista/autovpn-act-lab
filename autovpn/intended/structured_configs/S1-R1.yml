@@ -45,6 +45,15 @@ enable_password:
   disabled: true
 eos_cli: "router adaptive-virtual-topology\n  wan fabric\n    peer role edge\n      rule NoP2P region self zone self site exclude all"
 ethernet_interfaces:
+- name: Ethernet1
+  description: SW1
+  shutdown: false
+  flow_tracker:
+    hardware: FLOW-TRACKER
+  metadata:
+    peer_type: l3_interface
+  switchport:
+    enabled: false
 - name: Ethernet2
   description: internet_inet-cloud
   shutdown: false
@@ -57,9 +66,12 @@ ethernet_interfaces:
     peer_type: l3_interface
   switchport:
     enabled: false
-- name: Ethernet1
-  flow_tracker:
-    hardware: FLOW-TRACKER
+- name: Ethernet1.50
+  shutdown: false
+  vrf: A
+  encapsulation_dot1q:
+    vlan: 50
+  ip_address: 10.50.50.1/24
 flow_tracking:
   hardware:
     trackers:
@@ -189,6 +201,10 @@ metadata:
     - name: Site
       value: site01
     interface_tags:
+    - interface: Ethernet1
+      tags:
+      - name: Type
+        value: lan
     - interface: Ethernet2
       tags:
       - name: Type

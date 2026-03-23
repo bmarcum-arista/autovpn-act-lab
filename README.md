@@ -64,6 +64,12 @@ This lab simulates a WAN fabric using Arista's **AutoVPN** solution. Two hub rou
         └── cv-deploy.yml       # Deploy configs to CloudVision
 ```
 
+## Requirements
+
+- ACT account with access to CloudEOS and vEOS images
+- CVaaS (CloudVision as a Service) tenant
+- [AVD devcontainer](https://avd.arista.com/stable/docs/containers/overview.html) for running AVD playbooks
+
 ## Workflow
 
 ### 1. Spin up the lab in ACT
@@ -86,7 +92,7 @@ python3 scripts/sync-hosts.py
 
 ```bash
 cd act
-ansible-playbook -i inventory.yml playbooks/cvaas-onboarding.yml
+ansible-playbook playbooks/cvaas-onboarding.yml
 ```
 
 Requires a CVaaS service account token at `../cvaas-service.tok`.
@@ -94,7 +100,6 @@ Requires a CVaaS service account token at `../cvaas-service.tok`.
 ### 5. Push infrastructure configurations
 
 ```bash
-cd act
 ansible-playbook playbooks/push_configs.yml
 ```
 
@@ -103,26 +108,23 @@ Pushes static configurations (interfaces, routing, AAA) to the VEOS infrastructu
 ### 6. Configure tools servers
 
 ```bash
-cd act
 ansible-playbook playbooks/configure_hosts.yml
 ```
 
 ### 7. Push the CloudEOS IPSec license
 
+*Requires the license file at `../license_CloudEOS_IPSec.json`.*
 ```bash
-cd act
-ansible-playbook -i inventory.yml playbooks/push_license.yml
+ansible-playbook playbooks/push_license.yml
 ```
-
-Requires the license file at `../license_CloudEOS_IPSec.json`.
 
 ### 8. Build configurations with AVD
 
 Run inside the AVD devcontainer:
 
 ```bash
-cd autovpn
-ansible-playbook -i inventory.yml playbooks/build.yml
+cd ../autovpn
+ansible-playbook playbooks/build.yml
 ```
 
 Generates structured configs and EOS CLI configs under `autovpn/intended/`.
@@ -130,18 +132,13 @@ Generates structured configs and EOS CLI configs under `autovpn/intended/`.
 ### 9. Submit configurations to CloudVision
 
 ```bash
-cd autovpn
-ansible-playbook -i inventory.yml playbooks/cv-deploy.yml
+ansible-playbook playbooks/cv-deploy.yml
 ```
-
-This creates a change control in CVaaS.
+A change control is now created in CVaaS.
 
 ### 10. Review and execute the change control in CVaaS
 
 Log in to CVaaS and navigate to **Provisioning > Change Control**. Review the proposed configuration changes, then approve and execute the change control to deploy configs to the devices.
 
-## Requirements
+## Topology Validation Commands and Troubleshooting
 
-- ACT account with access to CloudEOS and vEOS images
-- CVaaS (CloudVision as a Service) tenant
-- [AVD devcontainer](https://avd.arista.com/stable/docs/containers/overview.html) for running AVD playbooks

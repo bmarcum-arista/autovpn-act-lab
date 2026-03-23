@@ -55,6 +55,12 @@ ethernet_interfaces:
     peer_type: l3_interface
   switchport:
     enabled: false
+- name: Ethernet1
+  shutdown: false
+  vrf: A
+  ip_address: 21.101.104.104/24
+  switchport:
+    enabled: false
 flow_tracking:
   hardware:
     trackers:

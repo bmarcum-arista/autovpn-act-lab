@@ -4,16 +4,19 @@
 
 custom_structured_configuration_ethernet_interfaces:
 - name: Ethernet1
-  flow_tracker:
-    hardware: FLOW-TRACKER
-- name: Ethernet2
-  flow_tracker:
-    hardware: FLOW-TRACKER
+  description: SW1
+  switchport:
+    enabled: false
+- name: Ethernet1.80
+  encapsulation_dot1q:
+    vlan: 80
+  vrf: A
+  ip_address: 10.80.80.1/24
+  shutdown: false
 
-# # Disable Full Mesh (SPOKE-TO-SPOKE) to enforce HUB & SPOKE
+# Disable Full Mesh (SPOKE-TO-SPOKE) to enforce HUB & SPOKE
 custom_structured_configuration_eos_cli: |-
   router adaptive-virtual-topology
     wan fabric
       peer role edge
         rule NoP2P region self zone self site exclude all
-

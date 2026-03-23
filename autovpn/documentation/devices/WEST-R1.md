@@ -374,11 +374,18 @@ interface Dps1
 
 | Interface | Description | Channel Group | IP Address | VRF | MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | ------------- | ---------- | --- | --- | -------- | ------ | ------- |
+| Ethernet1 | - | - | 21.101.104.104/24 | A | - | False | - | - |
 | Ethernet2 | internet_inet-cloud | - | 192.1.103.2/30 | default | - | False | ACL-HUB-INTERNET-IN_Ethernet2 | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
+!
+interface Ethernet1
+   no shutdown
+   no switchport
+   vrf A
+   ip address 21.101.104.104/24
 !
 interface Ethernet2
    description internet_inet-cloud
