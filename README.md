@@ -244,13 +244,6 @@ show ip security connection detail
 
 Check that `State: established` and that both inbound and outbound packet counts are non-zero.
 
-**If IPSec is not forming, check the IKE/IPSec log:**
-
-```eos
-bash
-tail -f /var/log/charon.log
-```
-
 **Common issues:**
 
 - Mismatched preshared key
