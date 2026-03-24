@@ -89,11 +89,14 @@ All optimizations, such as protocol timers and parameters, provided within the c
 
 - In ACT: Select Labs > Select Lab Name > Select "Download Inventory" at the bottom of the page.
 - Import `act/topology-files/autovpn-act-lab.yml` into ACT and start the topology.
-*Refer to the help section for a link to the ACT User Guide for additional information*
+
+> [!TIP]
+> Refer to the help section for a link to the ACT User Guide for additional information.
 
 ### 2. Download the ACT inventory
 
-Once the lab is running, download the Ansible inventory file from ACT (it contains the management IP addresses assigned to each node) and save it to `act/inventory.yml`.
+Once the lab is running, download the Ansible inventory file from ACT (Select Lab Name > "Download Inventory" at the bottom of the page which contains the management IP addresses assigned to each node) and save it to `act/inventory.yml`.
+
 
 ### 3. Sync management IPs to the AVD inventory
 
