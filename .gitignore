@@ -294,3 +294,6 @@ clab-*/
 license_*.json
 *.tok
 
+## act/inventory.yml contains environment-specific management IPs
+act/inventory.yml
+

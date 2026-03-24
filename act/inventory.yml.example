@@ -1,0 +1,118 @@
+---
+# Copy this file to inventory.yml and update ansible_host values with
+# the management IPs assigned by your ACT lab environment.
+all:
+  children:
+    CVP:
+      hosts:
+        cv_ztp:
+          ansible_host: 192.0.2.1      # Replace with your CVP management IP
+          ansible_user: root
+          ansible_password: cvproot
+        cv_server:
+          ansible_httpapi_host: 192.0.2.1
+          ansible_host: 192.0.2.1
+          ansible_user: cvpadmin
+          ansible_password: cvp123!
+    VEOS:
+      hosts:
+        CORE:
+          ansible_host: 192.0.2.11
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        EAST-AGG:
+          ansible_host: 192.0.2.21
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        EAST-DC:
+          ansible_host: 192.0.2.22
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        INTERNET:
+          ansible_host: 192.0.2.23
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S1-SW1:
+          ansible_host: 192.0.2.31
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S2-SW1:
+          ansible_host: 192.0.2.32
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S3-SW1:
+          ansible_host: 192.0.2.33
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S4-SW1:
+          ansible_host: 192.0.2.34
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-AGG:
+          ansible_host: 192.0.2.41
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-DC:
+          ansible_host: 192.0.2.42
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+    CLOUDEOS:
+      hosts:
+        EAST-R1:
+          ansible_host: 192.0.2.51
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S1-R1:
+          ansible_host: 192.0.2.61
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S2-R1:
+          ansible_host: 192.0.2.62
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S3-R1:
+          ansible_host: 192.0.2.63
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        S4-R1:
+          ansible_host: 192.0.2.64
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+        WEST-R1:
+          ansible_host: 192.0.2.71
+          ansible_user: cvpadmin
+          ansible_ssh_pass: "cvp123!"
+    TOOLSSERVER:
+      hosts:
+        HOST-A1:
+          ansible_host: 192.0.2.101
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-A2:
+          ansible_host: 192.0.2.102
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-B1:
+          ansible_host: 192.0.2.111
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-B2:
+          ansible_host: 192.0.2.112
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-C1:
+          ansible_host: 192.0.2.121
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-D1:
+          ansible_host: 192.0.2.131
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-E1:
+          ansible_host: 192.0.2.141
+          ansible_user: arista
+          ansible_ssh_pass: arista
+        HOST-F1:
+          ansible_host: 192.0.2.151
+          ansible_user: arista
+          ansible_ssh_pass: arista
