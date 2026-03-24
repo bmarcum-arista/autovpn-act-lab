@@ -12,11 +12,12 @@ This topology is heavily inspired by the [Tech Library - AutoVPN Deployment Guid
 
 Items that are outside the scope of this example include:
 
-Security (AAA, Device Hardening)
-Infrastructure Services (DNS, NTP, Syslog, Telemetry, etc.)
-Design Theory and AutoVPN protocol operations details
-Fine tuning of convergence and performance optimizations
-For details on recommended settings to secure EOS, please refer to the [EOS Hardening Guide](https://arista.my.site.com/AristaCommunity/s/article/arista-eos-hardening-guide).
+- Security (AAA, Device Hardening)
+- Infrastructure Services (DNS, NTP, Syslog, Telemetry, etc.)
+- Design Theory and AutoVPN protocol operations details
+- Fine tuning of convergence and performance optimizations
+
+> [!TIP] For details on recommended settings to secure EOS, please refer to the [EOS Hardening Guide](https://arista.my.site.com/AristaCommunity/s/article/arista-eos-hardening-guide).
 
 All optimizations, such as protocol timers and parameters, provided within the context of the AutoVPN Deployment Guide are general recommendations. Fine-tuning of performance and convergence optimizations should be tested and validated based on the requirements and scale of a design.
 
