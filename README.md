@@ -89,7 +89,6 @@ All optimizations, such as protocol timers and parameters, provided within the c
 
 - In ACT: Select Labs > Select Lab Name > Select "Download Inventory" at the bottom of the page.
 - Import `act/topology-files/autovpn-act-lab.yml` into ACT and start the topology.
-
 *Refer to the help section for a link to the ACT User Guide for additional information*
 
 ### 2. Download the ACT inventory
@@ -239,6 +238,7 @@ Each spoke builds a static IPSec tunnel to both WEST-R1 and EAST-R1. Verify bidi
 ```eos
 show ip security connection detail
 ```
+
 Check that `State: established` and that both inbound and outbound packet counts are non-zero.
 
 **If IPSec is not forming, check the IKE/IPSec log:**
@@ -265,6 +265,7 @@ tail -f /var/log/charon.log
 ```eos
 show ip route interface Dps1
 ```
+
 Expect `/32` routes for `10.0.1.103` (WEST-R1) and `10.0.2.103` (EAST-R1) at minimum.
 
 ```bash
