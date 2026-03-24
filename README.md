@@ -33,7 +33,7 @@ All optimizations, such as protocol timers and parameters, provided within the c
 | WEST-AGG/DC, EAST-AGG/DC, CORE | vEOS | Data center / aggregation |
 | S1-SW1 – S4-SW1 | vEOS | Site access switches |
 | HOST-A1 – HOST-F1 | Ubuntu 24.04 | Traffic generation / testing |
-| CVP | CloudVision | Management & telemetry |
+| CVaaS | CloudVision | Management & telemetry (CVP also included, if needed) |
 | INTERNET | vEOS | Simulated internet underlay |
 
 ## WAN Design
