@@ -43,7 +43,6 @@ dps_interfaces:
     hardware: FLOW-TRACKER
 enable_password:
   disabled: true
-eos_cli: "router adaptive-virtual-topology\n  wan fabric\n    peer role edge\n      rule NoP2P region self zone self site exclude all"
 ethernet_interfaces:
 - name: Ethernet1
   description: SW1
