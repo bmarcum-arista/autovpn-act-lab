@@ -97,7 +97,6 @@ All optimizations, such as protocol timers and parameters, provided within the c
 
 Once the lab is running, download the Ansible inventory file from ACT (Select Lab Name > "Download Inventory" at the bottom of the page which contains the management IP addresses assigned to each node) and save it to `act/inventory.yml`.
 
-
 ### 3. Sync management IPs to the AVD inventory
 
 Run the sync script from the repo root to propagate IP addresses from `act/inventory.yml` into `autovpn/inventory.yml`:
