@@ -1,3 +1,5 @@
+---
+
 l3_interface_profiles:
   - profile: INTERNET-HUB-WAN-INTERFACE
     peer: inet-cloud
