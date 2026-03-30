@@ -13,6 +13,28 @@
         name: arista
         shell: /bin/bash
 
+    - name: Install fping
+      ansible.builtin.apt:
+        name: fping
+        state: present
+        update_cache: true
+
+    - name: Copy fping_all.sh to /home/arista
+      ansible.builtin.copy:
+        src: ../../scripts/fping_all.sh
+        dest: /home/arista/fping_all.sh
+        owner: arista
+        group: arista
+        mode: "0755"
+
+    - name: Copy ip_list.txt to /home/arista
+      ansible.builtin.copy:
+        src: ../../scripts/ip_list.txt
+        dest: /home/arista/ip_list.txt
+        owner: arista
+        group: arista
+        mode: "0644"
+
     - name: Push netplan config for et2
       ansible.builtin.template:
         src: ../templates/99-et2.yaml.j2
