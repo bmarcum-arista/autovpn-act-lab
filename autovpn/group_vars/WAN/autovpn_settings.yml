@@ -3,9 +3,7 @@
 # WAN HUB Settings
 
 fabric_name: WAN
-use_anta: true
-deploy_to_cv_accept_preview: true
-deploy_to_cv_inventory_host: cloudvision
+
 bgp_update_wait_install: false
 
 wan_mode: cv-pathfinder
